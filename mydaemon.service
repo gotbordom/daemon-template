@@ -1,0 +1,15 @@
+[Unit]
+Description=My Modern C++ Daemon
+After=network.target
+
+[Service]
+ExecStart=/home/atracy/repos/daemon-template/src/mydaemon
+Type=forking
+Restart=on-failure
+RestartSec=5s
+StandardOutput=journal
+StandardError=journal
+User=atracy
+
+[Install]
+WantedBy=multi-user.target

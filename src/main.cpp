@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -33,6 +34,11 @@ void daemonize()
         std::cerr << "Failed to create new session" << std::endl;
         exit(EXIT_FAILURE);
     }
+
+    /* Catch, ignore and handle signals */
+    // TODO: Implement a working signal handler */
+    signal(SIGCHLD, SIG_IGN);
+    signal(SIGHUP, SIG_IGN);
 
     // Fork the second time
     pid = fork();
