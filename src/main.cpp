@@ -13,6 +13,35 @@ void logMessage(const std::string &message)
     std::cout << message << std::endl;
 }
 
+/* Signal handler function */
+void signal_handler(int signum) {
+    switch (signum) {
+        case SIGTERM:
+            // Gracefully shutdown
+            sd_journal_print(LOG_INFO, "Handling SIGTERM...");
+            break;
+        case SIGINT:
+            // Gracefully shutdown or ignore
+            sd_journal_print(LOG_INFO, "Handling SIGINT...");
+            break;
+        case SIGQUIT:
+            // Handle quit or ignore
+            sd_journal_print(LOG_INFO, "Handling SIGQUIT...");
+            break;
+        case SIGPIPE:
+            // Ignore or log
+            sd_journal_print(LOG_INFO, "Handling SIGPIPE...");
+            break;
+        case SIGUSR1:
+        case SIGUSR2:
+            // Handle custom actions
+            sd_journal_print(LOG_INFO, "Handling SIGUSER1 || 2...");
+            break;
+        default:
+            break;
+    }
+}
+
 void daemonize()
 {
     // Fork the first time
@@ -39,6 +68,13 @@ void daemonize()
     // TODO: Implement a working signal handler */
     signal(SIGCHLD, SIG_IGN);
     signal(SIGHUP, SIG_IGN);
+    signal(SIGTERM, signal_handler);
+    signal(SIGINT, signal_handler);
+    signal(SIGQUIT, signal_handler);
+    signal(SIGPIPE, SIG_IGN);
+    signal(SIGUSR1, signal_handler);
+    signal(SIGUSR2, signal_handler);
+
 
     // Fork the second time
     pid = fork();
